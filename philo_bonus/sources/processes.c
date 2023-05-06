@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 19:04:02 by fra               #+#    #+#             */
-/*   Updated: 2023/05/06 19:09:28 by fra              ###   ########.fr       */
+/*   Updated: 2023/05/06 22:30:41 by fra              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ void	begin_simulation(t_deposit *depo)
 			set_last_time_eat(phil);
 			while (delta_time(*phil->_start_sim, phil->last_time_eat) < 0)
 				set_last_time_eat(phil);
-			if (phil->id % 2 == 0)
-				ft_msleep(phil, 5);
+			// if (phil->id % 2 == 0)
+			// 	ft_msleep(phil, 5);
 			*phil->_start_sim = phil->last_time_eat;
 			eat_sleep_repeat(phil);
 		}
