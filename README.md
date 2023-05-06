@@ -13,7 +13,7 @@ The designed solution imitates the behaviour of every philosopher: when it has a
 - A philosopher dies
 - The last philosopher ate enough times (optional parameter, see next)
 When an action is performed (eat, grab a fork, die, ...) a message is printed on stdout with the format:
-    - [time_stamp] -- [id_philosopher] [action]
+        [time_stamp] -- [id_philosopher] [action]
 
 Furthermore, the solution was implemented with these constraints:
 - 1) the philosophers shouldn't die                   --> the code must be optimized, so the time losses are reducted as much as possible
