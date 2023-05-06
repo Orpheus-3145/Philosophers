@@ -38,9 +38,9 @@ The input received is checked and parsed, after validation, the child programs a
 
 Because there can be no exchange of information between the philosophers/programs, how is it possible to terminate the simuation, i.e. to advise all the philosophers of the death of one their own or that all of them ate max_meals times?
 
-Another program must runs behind the scenes, its job is to verify if one of the two conditions *(see #Intro)* are satisfied, if so, it tells to all the programs to stop their execution.
+Another program must run behind the scenes, its job is to verify if one of the two ending conditions *(see #Intro)* is satisfied, if so, it tells to all the programs to stop their execution.
 
-NB: A philosopher can and will die even while eating or sleeping, in case these t_eat or t_sleep take longer than the surviving time.
+NB: A philosopher can and **will** die even while eating or sleeping, in case these t_eat or t_sleep take longer than the surviving time.
 
 
 # Approaches
@@ -54,10 +54,10 @@ To avoid rata races to shared variables, mutexes are used to protect those:
 ## Processes and semaphores:
 The second implementation, located inside folder ```philo_bonus```, runs a process for every philosopher and a thread (monitor) for every process; so with n philos there are n + 1 processes and n threads. 
 To avoid rata races to shared variables, semaphores are used to protect those:
-- **forks**:** the total amount of forks is regulated by a semaphore *(see #About the differences##1)*;
-- **status**:** the status of the philosopher (ALIVE, DEAD, ...) is protected because it is read and written both by the philosopher itself and its monitor;
-- **last_time_eat**:** timestamp of last meal of the philosopher is protected because it is read and written both by the philosopher itself and its monitor;
-- **stdout**:** yes, printf() is already protected for concurrent access, but this semaphore makes sure that after the death of a philosopher no other message will be printed, because of course there's a small delay when all the philos/prcoesses are terminated *(see #About the differences##2)*.
+- **forks**: the total amount of forks is regulated by a semaphore *(see #About the differences##1)*;
+- **status**: the status of the philosopher (ALIVE, DEAD, ...) is protected because it is read and written both by the philosopher itself and its monitor;
+- **last_time_eat**: timestamp of last meal of the philosopher is protected because it is read and written both by the philosopher itself and its monitor;
+- **stdout**: yes, printf() is already protected for concurrent access, but this semaphore makes sure that after the death of a philosopher no other message will be printed, because of course there's a small delay when all the philos/prcoesses are terminated *(see #About the differences##2)*.
 
 ## About the differences:
 1. The second approach modifies a little the rules: now the forks are no longer on the left and right of every partecipant but in the centre of the table, so everyone can just pick up two forks from the pile, if there're any available;
