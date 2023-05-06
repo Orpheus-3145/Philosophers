@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        ::::::::            */
-/*   tools.c                                            :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: fra <fra@student.42.fr>                      +#+                     */
-/*                                                   +#+                      */
-/*   Created: 2023/03/23 14:12:51 by fra           #+#    #+#                 */
-/*   Updated: 2023/04/30 18:58:38 by faru          ########   odam.nl         */
+/*                                                        :::      ::::::::   */
+/*   tools.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fra <fra@student.42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/23 14:12:51 by fra               #+#    #+#             */
+/*   Updated: 2023/05/06 19:22:04 by fra              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int32_t	delta_time(t_timeval t1, t_timeval t2)
 	return (timestamp / 1000);
 }
 
-void	ft_usleep(t_philo *phil, uint32_t milli_secs)
+void	ft_msleep(t_philo *phil, uint32_t milli_secs)
 {
 	t_timeval	start;
 	t_timeval	current;
@@ -78,7 +78,7 @@ void	ft_usleep(t_philo *phil, uint32_t milli_secs)
 	gettimeofday(&current, NULL);
 	while (delta_time(start, current) < (int32_t) milli_secs)
 	{
-		if (check_status(phil) != ALIVE)
+		if (get_status(phil) != ALIVE)
 			break ;
 		usleep(50);
 		gettimeofday(&current, NULL);
@@ -88,6 +88,7 @@ void	ft_usleep(t_philo *phil, uint32_t milli_secs)
 void	kill_program(t_deposit *depo, char *message, bool terminate)
 {
 	uint32_t	i;
+	uint32_t	len_mess;
 
 	if (depo)
 	{
@@ -97,9 +98,15 @@ void	kill_program(t_deposit *depo, char *message, bool terminate)
 			while (i < depo->n_philos)
 				set_status(depo->philos + i++, ERROR);
 		}
-		ft_usleep(depo->philos, 500);
+		ft_msleep(depo->philos, 500);
 		free_depo(depo);
 	}
-	printf("\t-- %s --\n", message);
+	if (message)
+	{
+		len_mess = 0;
+		while(message[len_mess++]);
+		write(2, message, len_mess);
+		write(2, "\n", 1);
+	}
 	exit(EXIT_FAILURE);
 }

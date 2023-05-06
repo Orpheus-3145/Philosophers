@@ -1,12 +1,12 @@
 # **************************************************************************** #
 #                                                                              #
-#                                                         ::::::::             #
-#    Makefile                                           :+:    :+:             #
-#                                                      +:+                     #
-#    By: fra <fra@student.42.fr>                      +#+                      #
-#                                                    +#+                       #
-#    Created: 2023/03/23 14:01:32 by fra           #+#    #+#                  #
-#    Updated: 2023/05/02 17:32:18 by faru          ########   odam.nl          #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: fra <fra@student.42.fr>                    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2023/03/23 14:01:32 by fra               #+#    #+#              #
+#    Updated: 2023/05/06 15:44:41 by fra              ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ SRC_DIR := sources
 OBJ_DIR := objects
 INCLUDE  := include
 
-HEADERS := $(shell find $(INCLUDE) -type f -name '*.h')
+HEADERS := $(shell find include -type f -name '*.h')
 SOURCES := $(shell find $(SRC_DIR) -type f -name '*.c')
 OBJECTS := $(patsubst $(SRC_DIR)%,$(OBJ_DIR)%,$(SOURCES:.c=.o))
 
@@ -48,7 +48,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEADERS)
 	@printf "(philosophers) $(BLUE)Created object $$(basename $@)$(RESET)\n"
 
 clean:
-	@for file in $(shell find $(OBJ_DIR) -type f -name '*.o'); do \
+	@for file in $(shell find $(OBJ_DIR) -type f -name '*.o'); do 	\
 		rm -f $$file;	\
 		printf "(philosophers) $(RED)Removed object $$(basename $$file)$(RESET)\n"; \
 	done

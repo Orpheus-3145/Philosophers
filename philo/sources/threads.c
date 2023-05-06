@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        ::::::::            */
-/*   threads.c                                          :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: fra <fra@student.42.fr>                      +#+                     */
-/*                                                   +#+                      */
-/*   Created: 2023/03/23 15:46:35 by fra           #+#    #+#                 */
-/*   Updated: 2023/04/30 18:58:38 by faru          ########   odam.nl         */
+/*                                                        :::      ::::::::   */
+/*   threads.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fra <fra@student.42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/23 15:46:35 by fra               #+#    #+#             */
+/*   Updated: 2023/05/06 18:43:14 by fra              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,9 @@ void	*eat_sleep_repeat(void *param)
 
 	self = (t_philo *) param;
 	if (self->id % 2 == 0)
-		ft_usleep(self, 10);
+		ft_msleep(self, 10);
 	set_last_time_eat(self);
-	while (check_status(self) == ALIVE)
+	while (get_status(self) == ALIVE)
 	{
 		pthread_mutex_lock(self->l_fork);
 		print_message(self, FORK);
@@ -55,13 +55,13 @@ void	*eat_sleep_repeat(void *param)
 		print_message(self, FORK);
 		set_last_time_eat(self);
 		print_message(self, EAT);
-		ft_usleep(self, self->t_eat);
+		ft_msleep(self, self->t_eat);
 		pthread_mutex_unlock(&self->r_fork);
 		pthread_mutex_unlock(self->l_fork);
 		if (self->meals && ! --self->meals)
 			set_status(self, FULLY_ATE);
 		print_message(self, SLEEP);
-		ft_usleep(self, self->t_sleep);
+		ft_msleep(self, self->t_sleep);
 		print_message(self, THINK);
 	}
 	return (NULL);
@@ -74,17 +74,21 @@ void	*monitoring(void *param)
 	uint32_t	i;
 
 	depo = (t_deposit *) param;
-	i = 0;
 	n_philo_fully_ate = 0;
+	i = 0;
 	while (true)
 	{
-		n_philo_fully_ate += check_status(depo->philos + i) == FULLY_ATE;
-		if (n_philo_fully_ate == depo->n_philos)
+		if (i == 0)
+			n_philo_fully_ate = 0;
+		else if (get_status(depo->philos + i) == FULLY_ATE)
 		{
-			depo->philos_fully_ate = true;
-			return (NULL);
+			if (++n_philo_fully_ate == depo->n_philos)
+			{
+				depo->philos_fully_ate = true;
+				return (NULL);
+			}
 		}
-		else if (is_dead(depo->philos + i))
+		if (is_dead(depo->philos + i))
 			break ;
 		i = (i + 1) % depo->n_philos;
 	}
@@ -116,10 +120,10 @@ void	print_message(t_philo *philo, t_action action)
 	t_timeval	current;
 	uint32_t	ts;
 
+	if (get_status(philo) != ALIVE)
+		return ;
 	gettimeofday(&current, NULL);
 	ts = delta_time(*(philo->_start_sim), current);
-	if (check_status(philo) != ALIVE)
-		return ;
 	if (action == EAT)
 		printf("%s % 6d -- phil %u is eating\n" RESET, GRN, ts, philo->id);
 	else if (action == SLEEP)

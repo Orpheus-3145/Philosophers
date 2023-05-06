@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        ::::::::            */
-/*   init.c                                             :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: fra <fra@student.42.fr>                      +#+                     */
-/*                                                   +#+                      */
-/*   Created: 2023/04/01 18:25:25 by fra           #+#    #+#                 */
-/*   Updated: 2023/04/30 18:58:38 by faru          ########   odam.nl         */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fra <fra@student.42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/04/01 18:25:25 by fra               #+#    #+#             */
+/*   Updated: 2023/05/06 19:22:32 by fra              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,8 @@ bool	create_depo(int32_t argc, char **argv, t_deposit *depo)
 	t_philo		*philo;
 	uint32_t	i;	
 
-	if (! depo)
-		return (false);
 	depo->n_philos = ft_atoui(argv[0]);
+	depo->philos_fully_ate = false;
 	depo->philos = malloc(depo->n_philos * sizeof(t_philo));
 	if (! depo->philos)
 		return (false);
@@ -34,8 +33,6 @@ bool	create_depo(int32_t argc, char **argv, t_deposit *depo)
 			philo->l_fork = &(philo - 1)->r_fork;
 	}
 	depo->philos[0].l_fork = &depo->philos[i - 1].r_fork;
-	depo->max_meals = depo->philos[0].meals;
-	depo->philos_fully_ate = false;
 	return (true);
 }
 

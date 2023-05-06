@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        ::::::::            */
-/*   process.c                                          :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: fra <fra@student.42.fr>                      +#+                     */
-/*                                                   +#+                      */
-/*   Created: 2023/04/10 19:04:02 by fra           #+#    #+#                 */
-/*   Updated: 2023/04/30 19:04:21 by faru          ########   odam.nl         */
+/*                                                        :::      ::::::::   */
+/*   processes.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fra <fra@student.42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/04/10 19:04:02 by fra               #+#    #+#             */
+/*   Updated: 2023/05/06 19:09:28 by fra              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,10 @@
 
 void	begin_simulation(t_deposit *depo)
 {
-	uint32_t	i;
 	t_philo		*phil;
+	pid_t		terminated_pid;
+	int32_t		status_procs;
+	uint32_t	i;
 
 	i = 0;
 	while (i < depo->n_philos)
@@ -30,38 +32,38 @@ void	begin_simulation(t_deposit *depo)
 			while (delta_time(*phil->_start_sim, phil->last_time_eat) < 0)
 				set_last_time_eat(phil);
 			if (phil->id % 2 == 0)
-				ft_usleep(phil, 5);
+				ft_msleep(phil, 5);
 			*phil->_start_sim = phil->last_time_eat;
 			eat_sleep_repeat(phil);
 		}
 	}
-	terminate_procs(depo);
-}
-
-void	terminate_procs(t_deposit *depo)
-{
-	int32_t		status_procs;
-	pid_t		terminated_pid;
-	t_philo		*phil;
-	uint32_t	i;
-
-	terminated_pid = waitpid(-1, &status_procs, 0);
-	if (WIFEXITED(status_procs) && WEXITSTATUS(status_procs) == DEATH_STATUS)
+	while (true)
 	{
-		phil = depo->philos;
-		while (phil->phil_process != terminated_pid)
-			phil++;
-		i = 0;
-		while (i < depo->n_philos)
-			kill(depo->philos[i++].phil_process, SIGINT);
+		terminated_pid = waitpid(-1, &status_procs, 0);
+		if (terminated_pid <= 0)
+			break ;
+		else if (WIFEXITED(status_procs) && WEXITSTATUS(status_procs) != FULLY_ATE_STATUS)
+		{
+			phil = depo->philos;
+			while (phil->phil_process != terminated_pid)
+				phil++;
+			i = 0;
+			while (i < depo->n_philos)
+				kill(depo->philos[i++].phil_process, SIGINT);
+			if (WEXITSTATUS(status_procs) == ERROR_STATUS)
+				kill_program(depo, "program killed: error in child thread");
+			if (WEXITSTATUS(status_procs) == ALIVE_STATUS)
+				kill_program(depo, "Phil is still alive: this should not be possible");
+		}
 	}
-	while (waitpid(-1, &status_procs, 0) > 0)
-		;
 }
 
 void	eat_sleep_repeat(t_philo *phil)
 {
-	open_sems(phil);
+	phil->forks_sem = sem_open("/forks_semaphore", 0);
+	phil->print_sem = sem_open("/print_semaphore", 0);
+	phil->status_sem = sem_open(phil->status_sem_name, 0);
+	phil->time_sem = sem_open(phil->time_sem_name, 0);
 	if (pthread_create(&phil->check_death, NULL, &monitoring, phil))
 		set_status(phil, ERROR_STATUS);
 	else
@@ -74,16 +76,19 @@ void	eat_sleep_repeat(t_philo *phil)
 		print_message(phil, FORK);
 		set_last_time_eat(phil);
 		print_message(phil, EAT);
-		ft_usleep(phil, phil->t_eat);
+		ft_msleep(phil, phil->t_eat);
 		sem_post(phil->forks_sem);
 		sem_post(phil->forks_sem);
 		if (phil->meals && ! --phil->meals)
 			set_status(phil, FULLY_ATE_STATUS);
 		print_message(phil, SLEEP);
-		ft_usleep(phil, phil->t_sleep);
+		ft_msleep(phil, phil->t_sleep);
 		print_message(phil, THINK);
 	}
-	close_sems(phil);
+	sem_close(phil->forks_sem);
+	sem_close(phil->print_sem);
+	sem_close(phil->status_sem);
+	sem_close(phil->time_sem);
 	exit(get_status(phil));
 }
 
@@ -106,7 +111,7 @@ void	*monitoring(void *param)
 		if (status)
 			break ;
 		else
-			ft_usleep(phil, 10);
+			ft_msleep(phil, 10);
 	}
 	print_message(phil, DIE);
 	set_status(phil, DEATH_STATUS);

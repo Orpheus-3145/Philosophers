@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        ::::::::            */
-/*   init.c                                             :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: fra <fra@student.42.fr>                      +#+                     */
-/*                                                   +#+                      */
-/*   Created: 2023/04/01 18:25:25 by fra           #+#    #+#                 */
-/*   Updated: 2023/04/30 19:04:05 by faru          ########   odam.nl         */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fra <fra@student.42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/04/01 18:25:25 by fra               #+#    #+#             */
+/*   Updated: 2023/05/06 19:14:04 by fra              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,18 +50,45 @@ bool	create_philo(t_philo *phil, int32_t argc, char **argv, uint32_t id)
 		phil->meals = ft_atoui(argv[4]);
 	else
 		phil->meals = 0;
-	phil->st_sem_name = create_name_sem(id, "/status_semaphore_");
-	if (! phil->st_sem_name)
+	phil->status_sem_name = create_name_sem(id, "/status_semaphore_");
+	if (! phil->status_sem_name)
 		return (false);
-	if (! new_sem(phil->st_sem_name, phil->status_sem, 1))
+	if (! new_sem(phil->status_sem_name, phil->status_sem, 1))
 		return (false);
-	phil->tm_sem_name = create_name_sem(id, "/time_semaphore_");
-	if (! phil->tm_sem_name)
+	phil->time_sem_name = create_name_sem(id, "/time_semaphore_");
+	if (! phil->time_sem_name)
 		return (false);
-	if (! new_sem(phil->tm_sem_name, phil->time_sem, 1))
+	if (! new_sem(phil->time_sem_name, phil->time_sem, 1))
 		return (false);
 	else
 		return (true);
+}
+
+char	*create_name_sem(uint32_t id, char	*fixed)
+{
+	char		*final;
+	uint32_t	size;
+	uint32_t	i;
+	uint32_t	j;
+
+	size = 3;
+	while (fixed[size++ - 3])
+		;
+	final = malloc(size * sizeof(char));
+	if (final)
+	{
+		final[--size] = '\0';
+		j = 3;
+		while (j--)
+		{
+			final[--size] = id % 10 + '0';
+			id /= 10;
+		}
+		i = 0;
+		while (i++ < size)
+			final[i - 1] = fixed[i - 1];
+	}
+	return (final);
 }
 
 bool	new_sem(char *sem_name, sem_t *semaphore, int32_t amount)
@@ -83,11 +110,11 @@ void	free_depo(t_deposit *depo)
 		while (i < depo->n_philos)
 		{
 			sem_close(depo->philos[i].status_sem);
-			sem_unlink(depo->philos[i].st_sem_name);
-			free(depo->philos[i].st_sem_name);
+			sem_unlink(depo->philos[i].status_sem_name);
+			free(depo->philos[i].status_sem_name);
 			sem_close(depo->philos[i].time_sem);
-			sem_unlink(depo->philos[i].tm_sem_name);
-			free(depo->philos[i].tm_sem_name);
+			sem_unlink(depo->philos[i].time_sem_name);
+			free(depo->philos[i].time_sem_name);
 			i++;
 		}
 		free(depo->philos);

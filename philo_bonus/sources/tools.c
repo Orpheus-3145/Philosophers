@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        ::::::::            */
-/*   tools.c                                            :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: fra <fra@student.42.fr>                      +#+                     */
-/*                                                   +#+                      */
-/*   Created: 2023/03/23 14:12:51 by fra           #+#    #+#                 */
-/*   Updated: 2023/04/30 19:08:02 by faru          ########   odam.nl         */
+/*                                                        :::      ::::::::   */
+/*   tools.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fra <fra@student.42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/23 14:12:51 by fra               #+#    #+#             */
+/*   Updated: 2023/05/06 19:24:50 by fra              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,22 @@ bool	check_input(int32_t argc, char **argv)
 	return (ft_atoui(argv[1]) < 126);
 }
 
+void	kill_program(t_deposit *depo, char *message)
+{
+	uint32_t	len_mess;
+
+	if (depo)
+		free_depo(depo);
+	if (message)
+	{
+		len_mess = 0;
+		while(message[len_mess++]);
+		write(2, message, len_mess);
+		write(2, "\n", 1);
+	}
+	exit(EXIT_FAILURE);
+}
+
 uint32_t	ft_atoui(const char *str)
 {
 	uint32_t	nbr;
@@ -69,7 +85,7 @@ int32_t	delta_time(t_timeval t1, t_timeval t2)
 	return (timestamp / 1000);
 }
 
-void	ft_usleep(t_philo *phil, uint32_t milli_secs)
+void	ft_msleep(t_philo *phil, uint32_t milli_secs)
 {
 	t_timeval	start;
 	t_timeval	current;
@@ -85,29 +101,3 @@ void	ft_usleep(t_philo *phil, uint32_t milli_secs)
 	}
 }
 
-char	*create_name_sem(uint32_t id, char	*fixed)
-{
-	char		*final;
-	uint32_t	size;
-	uint32_t	i;
-	uint32_t	j;
-
-	size = 3;
-	while (fixed[size++ - 3])
-		;
-	final = malloc(size * sizeof(char));
-	if (final)
-	{
-		final[--size] = '\0';
-		j = 3;
-		while (j--)
-		{
-			final[--size] = id % 10 + '0';
-			id /= 10;
-		}
-		i = 0;
-		while (i++ < size)
-			final[i - 1] = fixed[i - 1];
-	}
-	return (final);
-}

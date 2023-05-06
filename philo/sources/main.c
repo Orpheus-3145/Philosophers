@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        ::::::::            */
-/*   main.c                                             :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: fra <fra@student.42.fr>                      +#+                     */
-/*                                                   +#+                      */
-/*   Created: 2023/03/23 13:56:49 by fra           #+#    #+#                 */
-/*   Updated: 2023/04/30 18:58:38 by faru          ########   odam.nl         */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fra <fra@student.42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/23 13:56:49 by fra               #+#    #+#             */
+/*   Updated: 2023/05/06 17:42:26 by fra              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ int	main(int argc, char **argv)
 	if (check_input(argc, argv) == 0)
 		kill_program(NULL, "input error", false);
 	depo = malloc(sizeof(t_deposit));
+	if (! depo)
+		kill_program(NULL, "memory fault", false);
 	if (! create_depo(--argc, ++argv, depo))
 		kill_program(depo, "program killed, failed to initilize", false);
 	gettimeofday(&depo->_start_sim, NULL);
@@ -27,7 +29,7 @@ int	main(int argc, char **argv)
 	else if (depo->n_philos == 1)
 	{
 		print_message(depo->philos, FORK);
-		ft_usleep(depo->philos, depo->philos->t_death);
+		ft_msleep(depo->philos, depo->philos->t_death);
 		print_message(depo->philos, DIE);
 	}
 	else if (depo->n_philos > 200)
