@@ -1,11 +1,14 @@
 # Philosophers
-Implementation of the **Dining Philosophers Problem**, this abstraction helps to get used to concurrent programming, where multiple entities runs indipendently, sharing resources for which the read/write access must be synchronized.
+Implementation of the **Dining Philosophers Problem**: it is an abstraction to get used to concurrent programming, where multiple entities runs indipendently, sharing resources for which the read/write access must be synchronized.
 
 
 # Overview
 There are n philosophers sitting on a circular table and on their left and right they have a fork, so that the right fork is the left one for the following philo: on the table there are n philosophers and n forks, and a lot of meals to eat that stimulate the Philosophy. 
+
 Every philosopher does three (mutual exclusive) actions: eat, sleep or think: they eat, they sleep, and then they think, waiting the availability of the forks on their left and right, so the cycle can start again.
+
 The catch is that a philosopher needs two forks to eat, once they're done they can let go the forks: as a consequence at most n/2 philosophers are eating at the same time.
+
 Last but not least, a philosopher dies if too much time passes since their last meal.
 
 
@@ -18,12 +21,12 @@ When an action is performed (eat, grab a fork, die, ...) a message is printed on
     [time_stamp] -- [id_philosopher] [action]/
 
 Furthermore, the solution was implemented with these restrictions:
-1. **philosophers shouldn't die**                   --> the code must be optimized, so the time losses are reducted as much as possible;
-2. **philosophers do not talk with each other**     --> the threads/proceses run by themselves: they cannot notify other philosophers of a change of their status, or anything else.
-3. messages must be fast                            --> not more than 10 millisecs must pass between the death of a philo and the printing of the message on stdout;
+1. **philosophers shouldn't die:** the code must be optimized, so the time losses are reducted as much as possible;
+2. **philosophers do not talk with each other:** threads/proceses run by themselves: they cannot notify other philosophers of a change of their status, or anything else.
+3. messages must be fast: not more than 10 millisecs must pass between the death of a philo and the printing of the message on stdout;
 
 ## Parameters:
-The program takes some parameteres to set the environments (the last parameter is optional!) *(see #Disclaimer#2)*;
+The program takes some parameteres to set the environments *(see #Disclaimer#2 for parameter limitations)*;
 1. number of existing philosophers                                    (a positive number is required);
 2. number of milliseconds that phil can stay alive without eating     (a non-negative number is required);
 3. number of milliseconds that phil needs to eat                      (a non-negative number is required);
@@ -32,6 +35,7 @@ The program takes some parameteres to set the environments (the last parameter i
 
 ## Eat-Sleep-Think:
 The input received is checked and parsed, after validation, the child programs are executed: the idea is that every philosopher is represented by an indipendent program that does its actions inside the endless (hopefully) cycle.
+
 Because there can be no exchange of informations between the philosophers/programs, how is it possible to terminate the simuation, i.e. to advise all the philosophers of the death of one their own or that all of them ate max_meals times?
 Another program must runs behind the scenes, its job is to verify if one of the two conditions *(see #Intro)* are satisfied, if so, it tells to all the programs to stop their execution.
 
@@ -62,7 +66,7 @@ To avoid rata races to shared variables, semaphores are used to protect those:
 
 
 # Code
-## Compiling and compiling:
+## Compiling and running:
 [inside ```philo``` or ```philo_bonus```]
 - ```make```:  creates the executable;
 - ```./philo[_bonus] n_philos t_death t_eat t_sleep [max_meals]```:   runs the executable.
@@ -90,7 +94,7 @@ To avoid rata races to shared variables, semaphores are used to protect those:
 
 
 # Disclaimer
-- Following the rules of this project, only certain functions were allowed *(see specifications in Chapter V/Chapter VI of the project (#References##Philosophers))* to manage threads, processes, mutexes and semaphores, it's natural that there are better implementations of this simulation using all of the tools available; nevertheless this wasn't that case;
+- Following the rules of this project, only certain functions were allowed (see specifications in Chapter V/Chapter VI of the PDF project *(see #References##Philosophers))* to manage threads, processes, mutexes and semaphores, it's natural that there are better implementations of this simulation using all of the tools available; nevertheless this wasn't that case;
 - This program greatly rely on the hardware underneath and performances will be affetected with big number of philosophers or short timings (or wooden computers), something to keep in mind:
     - for thread/mutex case not more than 200 philosophers can exist;
     - for process/semaphore case the number of philo/forks also depends on the maximum amount of semaphores the OS can handle, for my use-case it was 125 (TODO PUT_VERSION_MAC_USED);
