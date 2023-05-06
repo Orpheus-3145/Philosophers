@@ -1,5 +1,5 @@
 # Philosophers
-Implementation of the **Dining Philosophers Problem**: it is an abstraction to get used to concurrent programming, where multiple entities runs indipendently, sharing resources for which the read/write access must be synchronized.
+Implementation of the **Dining Philosophers Problem**: it is an abstraction to get used to concurrent programming, where multiple entities run indipendently, sharing resources for which the read/write access must be synchronized.
 
 
 # Overview
