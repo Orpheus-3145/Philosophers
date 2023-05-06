@@ -22,7 +22,7 @@ When an action is performed (eat, grab a fork, die, ...) a message is printed on
 
 Furthermore, the solution was implemented with these restrictions:
 1. **philosophers shouldn't die:** the code must be optimized, so the time losses are reducted as much as possible;
-2. **philosophers do not talk with each others:** threads/proceses run by themselves: they cannot notify other philosophers of a change of their status, or anything else.
+2. **philosophers do not talk with each other:** threads/proceses run by themselves: they cannot notify other philosophers of a change of their status, or anything else.
 3. **messages must be fast:** not more than 10 millisecs must pass between the death of a philo and the printing of the message on stdout;
 
 ## Parameters:
@@ -96,7 +96,7 @@ To avoid rata races to shared variables, semaphores are used to protect those:
 
 # Disclaimer
 - Following the rules of this project, only certain functions were allowed (see specifications in Chapter V/Chapter VI of the PDF project *(see #References##Philosophers))* to manage threads, processes, mutexes and semaphores, it's natural that there are better implementations of this simulation using all of the tools available; nevertheless this wasn't that case;
-- This program greatly rely on the hardware underneath and performances will be affetected with big number of philosophers or short timings (or wooden computers), something to keep in mind:
+- This program greatly relies on the hardware underneath and performances will be affetected with big number of philosophers or short timings (or wooden computers).. something to keep in mind:
     - for thread/mutex case not more than 200 philosophers can exist;
     - for process/semaphore case the number of philo/forks also depends on the maximum amount of semaphores the OS can handle, for my use-case it was 125 (TODO PUT_VERSION_MAC_USED);
     - its not recommended to use timings smaller than 60 ms, also the differences should consider 10 ms to be precise (t_death - (t_sleep + t_eat) > 10);
