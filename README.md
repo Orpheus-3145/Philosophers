@@ -18,7 +18,7 @@ When an action is performed (eat, grab a fork, die, ...) a message is printed on
 Furthermore, the solution was implemented with these restrictions:
 - 1. the philosophers shouldn't die                   --> the code must be optimized, so the time losses are reducted as much as possible
 - 2. messages must be fast                            --> not more than 10 millisecs must pass between the death of a philo and the printing of the message on stdout
-- 3. the philosophers do not talk with each other     --> the threads/proceses run by themselves: they cannot notify other philosophers a change of their status, or anything else
+- 3. the philosophers do not talk with each other     --> the threads/proceses run by themselves: they cannot notify other philosophers of a change of their status, or anything else
 
 ## Parameters:
 The program takes some parameteres to set the environments (the last parameter is optional!)
@@ -34,11 +34,11 @@ Because there can be no exchange of informations between the philosophers/progra
 Another program must runs behind the scenes, its job is to verify if one of the two conditions (see #Intro) are satisfied, if so, it tells to all the programs to stop their execution .
 
 ## Last notes
-- A philosopher can and will die even during eating and sleeping actions, in case these are takes longer than the surviving time
+- A philosopher can and will die even while eating or sleeping, in case these t_eat or t_sleep take longer than the surviving time
 - This program greatly rely on the hardware underneath and performances will be affetected with big number of philosophers or short timings, some hints:
     - for thread/mutex case not more than 200 philosophers can exist
-    - for process/semaphore case not more the number of philo/forks also depends on the maximum amount of semaphores the OS can handle, for my use-case it was 125 (TODO PUT_VERSION_MAC_USED)
-    - its not recommended to use timings smaller than 60 ms, also the differences should consider 10 ms (t_death - (t_sleep + t_eat) > 10)
+    - for process/semaphore case the number of philo/forks also depends on the maximum amount of semaphores the OS can handle, for my use-case it was 125 (TODO PUT_VERSION_MAC_USED)
+    - its not recommended to use timings smaller than 60 ms, also the differences should consider 10 ms to be precise (t_death - (t_sleep + t_eat) > 10)
 
 
 # Approaches
@@ -55,20 +55,20 @@ To avoid rata races to shared variables, semaphores are used to protect those:
 - forks: the total amount of forks is regulated by a semaphore (see #About the differences##1)
 - status: the status of the philosopher (ALIVE, DEAD, ...) is protected because it is read and written both by the philosopher itself and its monitor
 - last_time_eat: timestamp of last meal of the philosopher is protected because it is read and written both by the philosopher itself and its monitor
-- stdout: yes, printf() is already protected for concurrent access, but this semaphore makes possible that after the death of a philosopher no other message will be printed, because of course there's a small delay  (see #About the differences##2)
+- stdout: yes, printf() is already protected for concurrent access, but this semaphore makes sure that after the death of a philosopher no other message will be printed, because of course there's a small delay when all the philos/prcoesses are terminated (see #About the differences##2)
 
 ## About the differences
-- 1. The second approach modifies a little the rules: now the forks are no longer on the left and right of every partecipant but in the centre of the table, so everyone can just pick up two forks from the pile, if there're any available. 
-- 2. processes do not share memory by default so the monitor can no longer update the variable of every existing process, that is why every philosophers needs its own monitor. Finally, once a process endes with a DEATH status, the main process sends a SIG_INT to all of its chil processes
+- 1. The second approach modifies a little the rules: now the forks are no longer on the left and right of every partecipant but in the centre of the table, so everyone can just pick up two forks from the pile, if there're any available
+- 2. processes do not share memory by default so a signle process/monitor can no longer update the variable of every other process, that is why every philosophers needs its own monitor. Finally, once a process ends with a DEATH status, the main process sends a SIG_INT to all of its chil processes
 - 3. creating processes takes time, so to even all the differences, the simulation starts after 1 second the first process was created, on the other side threads are faster, so once they're created they start their execution right away, but the even ids are delayed by 5 ms, otherwise every philosopher would grab their left fork and wait for the right one, which is helded by the philo next to them, the result is a deadlock
-- 4. it is not possible to use a mutex also for the stdout in the thread case, beacuse here they programs must end by themselves (i.e. without a SIG_INT signal), with a mutex they would be stuck waiting for an impossible unlock (deadlock)
+- 4. it is not possible to use a mutex for the stdout in the thread case, beacuse the threads must end by themselves (i.e. without a SIG_INT signal), with a mutex they would be stuck waiting for an impossible unlock, again resulting in a deadlock
 
 
 # Code
 ## Compiling and compiling
 [inside ```philo``` or ```philo_bonus```]
-- ```make```        <-- creates the execcutable
-- ```./philo[_bonus] n_philos t_death t_eat t_sleep [max_meals]``` <-- runs the program
+- ```make```:  creates the executable
+- ```./philo[_bonus] n_philos t_death t_eat t_sleep [max_meals]```:   runs the executable
 
 ## Structure
     philo/                  <- thread simulation
@@ -93,7 +93,7 @@ To avoid rata races to shared variables, semaphores are used to protect those:
 
 
 # Disclaimer
-Following the rukes of this project, only certain functions were allowed [see specifications in *Chapter V/Chapter VI* of the project (#References)] to manage threads, processes, mutexes and semaphores, it's natural that there are better implementations of this simulation using the all of the tools available; nevertheless this wasn't that case.
+Following the rules of this project, only certain functions were allowed [see specifications in *Chapter V/Chapter VI* of the project (#References##Philosophers)] to manage threads, processes, mutexes and semaphores, it's natural that there are better implementations of this simulation using all of the tools available; nevertheless this wasn't that case.
 
 
 # References
