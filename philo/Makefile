@@ -6,7 +6,7 @@
 #    By: fra <fra@student.42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/23 14:01:32 by fra               #+#    #+#              #
-#    Updated: 2023/05/06 15:44:41 by fra              ###   ########.fr        #
+#    Updated: 2023/05/06 19:26:45 by fra              ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ OBJECTS := $(patsubst $(SRC_DIR)%,$(OBJ_DIR)%,$(SOURCES:.c=.o))
 
 CC  := gcc
 IFLAGS := -Iinclude
-CFLAGS := -Wall -Wextra -Werror -O3 #-g3 -fsanitize=thread
+CFLAGS := -Wall -Wextra -Werror -O3 #-g3 -fsanitize=thread -fsanitize=address
 
 GREEN = \x1b[32;01m
 RED = \x1b[31;01m
