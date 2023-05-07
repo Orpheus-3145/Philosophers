@@ -18,14 +18,14 @@ The designed solution replicates the behavior of every philosopher: different pr
 - A philosopher dies;
 - The last philosopher ate enough times, if the optional parameter is given *(see Parameters)*;
 When an action is performed (eat, grab a fork, die, ...) a message is printed on stdout with the format:
-- `[time_stamp] -- [id_philosopher] [action]`
+    `[time_stamp] -- [id_philosopher] [action]`
 
 Furthermore, the solution was implemented with these restrictions:
 1. **Philosophers shouldn't die:** the code must be optimized, so the time losses are reducted as much as possible;
 2. **Philosophers do not talk with each other:** threads/processes run by themselves: they cannot notify other philosophers of a change in their status, or anything else.
 
 ## Parameters:
-The program takes some parameters to set the environments *(see #Disclaimer#2 for parameters limitations)*;
+The program takes some parameters to set the environments *(see #Disclaimer##2 for parameters limitations)*;
 1. number of existing philosophers                                    (a positive number is required);
 2. number of milliseconds that phil is able to survive without eating     (a non-negative number is required);
 3. number of milliseconds that phil needs to eat                      (a non-negative number is required);
@@ -68,8 +68,8 @@ To avoid rata races to shared variables, semaphores are used to protect those:
 # Code
 ## Compiling and running:
 [inside ```philo``` or ```philo_bonus```]
-- ```make```:  creates the executable;
-- ```./philo[_bonus] n_philos t_death t_eat t_sleep [max_meals]```:   runs the executable.
+    ```make```:  creates the executable;
+    ```./philo[_bonus] n_philos t_death t_eat t_sleep [max_meals]```:   runs the executable.
 
 ## Structure:
     philo/                  <- thread simulation
