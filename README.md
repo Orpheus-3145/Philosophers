@@ -68,8 +68,11 @@ To avoid rata races to shared variables, semaphores are used to protect those:
 # Code
 ## Compiling and running:
 [inside ```philo``` or ```philo_bonus```]
-    `make`    creates the executable;
-    `./philo[_bonus] n_philos t_death t_eat t_sleep [max_meals]`    runs the executable.
+1. `make`    creates the executable;
+1. `make clean`    removes object files;
+1. `make fclean`    calls `make clean` and removes the executable;
+1. `make re`    calls 'make fclean' and creates the executable;
+2. `./philo[_bonus] n_philos t_death t_eat t_sleep [max_meals]`    runs the executable.
 
 ## Structure:
     philo/                  <- thread simulation
