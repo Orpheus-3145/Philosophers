@@ -42,15 +42,15 @@ Another program, called monitor, must run behind the scenes, its job is to verif
 NB: A philosopher can and **will** die even while eating or sleeping, in case t_eat or t_sleep is greater than the surviving time.
 
 
-# Approaches
-## Threads and mutexes:
+# Approach
+## Threads and mutex:
 The first implementation is located inside folder ```philo```, it creates a thread for every philosopher and another one, the monitor; so with n philos there are n + 2 (main + monitor) threads.
 To avoid rata races to shared variables, mutexes are used to protect those:
 - **forks:** every fork has its own mutex that makes the use of that fork mutually exclusive;
 - **status:** the status of the philosopher (ALIVE, DEAD, ...) is protected because it is read and written both by the philosopher itself and the monitor;
 - **last_time_eat:** timestamp of the last meal of the philosopher is protected because it is read and written both by the philosopher itself and the monitor.
 
-## Processes and semaphores:
+## Process and semaphores:
 The second implementation, located inside folder ```philo_bonus```, runs a process for every philosopher and a thread (monitor) for every process; so with n philos there are n + 1 processes and n threads. 
 To avoid rata races to shared variables, semaphores are used to protect those:
 - **forks**: the total amount of forks is regulated by a semaphore *(see #About the differences##1)*;
